@@ -1,0 +1,5 @@
+{
+  "id": "grass",
+  "walkable": true,
+  "texture": "tiles/grass.png"
+}
