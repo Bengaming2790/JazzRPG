@@ -1,4 +1,4 @@
-package me.regularben.map;
+package me.regularben.map.util;
 
 import me.regularben.entity.Entity;
 public interface TileBehavior {

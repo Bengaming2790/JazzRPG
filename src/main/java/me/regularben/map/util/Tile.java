@@ -1,4 +1,4 @@
-package me.regularben.map;
+package me.regularben.map.util;
 
 import me.regularben.entity.Entity;
 
@@ -12,7 +12,13 @@ public class Tile {
         this.x = x;
         this.y = y;
     }
+    public void onEnter(Entity entity) {
+        type.onEnter(entity, this);
+    }
 
+    public void onExit(Entity entity) {
+        type.onExit(entity, this);
+    }
     public TileType getType() {
         return type;
     }

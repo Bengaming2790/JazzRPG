@@ -1,4 +1,7 @@
 package me.regularben.map.util;
 
-public class BehaviorFactory {
+import java.util.Map;
+
+public interface BehaviorFactory {
+    TileBehavior create(Map<String, Object> data);
 }

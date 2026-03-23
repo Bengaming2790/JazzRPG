@@ -1,0 +1,5 @@
+{
+  "id": "air",
+  "walkable": true,
+  "texture": "tiles/air.png"
+}
