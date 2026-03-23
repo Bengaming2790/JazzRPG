@@ -41,7 +41,6 @@ public class EditorCanvas extends JPanel {
 
             @Override
             public void mouseDragged(MouseEvent e) {
-                // Dragging is part of the same action — no new snapshot
                 if (!SwingUtilities.isMiddleMouseButton(e)) handleMouse(e);
             }
 
