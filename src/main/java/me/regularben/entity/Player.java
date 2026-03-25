@@ -47,20 +47,34 @@ public class Player extends Entity {
     public double getX() { return playerLoc.getX(); }
     public double getY() { return playerLoc.getY(); }
 
-    public void update() {
-        double x = playerLoc.getX();
-        double y = playerLoc.getY();
-        double newX = x, newY = y;
+ public void update() {
+    	double x = playerLoc.getX();
+    	double y = playerLoc.getY();
+    	double newX = x, newY = y;
 
-        if (Input.isKeyDown(KeyEvent.VK_W) || Input.isKeyDown(KeyEvent.VK_UP))    newY -= moveSpeed / 16.0;
-        if (Input.isKeyDown(KeyEvent.VK_S) || Input.isKeyDown(KeyEvent.VK_DOWN))  newY += moveSpeed / 16.0;
-        if (Input.isKeyDown(KeyEvent.VK_A) || Input.isKeyDown(KeyEvent.VK_LEFT))  newX -= moveSpeed / 16.0;
-        if (Input.isKeyDown(KeyEvent.VK_D) || Input.isKeyDown(KeyEvent.VK_RIGHT)) newX += moveSpeed / 16.0;
+    	double dx = 0;
+    	double dy = 0;
 
-        if (canMoveTo(newX, y))  x = newX;
-        if (canMoveTo(x, newY))  y = newY;
+    	if (Input.isKeyDown(KeyEvent.VK_W) || Input.isKeyDown(KeyEvent.VK_UP))    dy -= 1.0;
+    	if (Input.isKeyDown(KeyEvent.VK_S) || Input.isKeyDown(KeyEvent.VK_DOWN))  dy += 1.0;
+    	if (Input.isKeyDown(KeyEvent.VK_A) || Input.isKeyDown(KeyEvent.VK_LEFT))  dx -= 1.0;
+    	if (Input.isKeyDown(KeyEvent.VK_D) || Input.isKeyDown(KeyEvent.VK_RIGHT)) dx += 1.0;
 
-        playerLoc.setLocal(x, y);
+    
+    	if (dx != 0 && dy != 0) {
+    	    double length = Math.sqrt(dx * dx + dy * dy);
+    	    dx /= length;
+    	    dy /= length;
+    	}
+
+    	double currentMoveSpeed = moveSpeed / 16.0;
+    	newX += dx * currentMoveSpeed;
+    	newY += dy * currentMoveSpeed;
+
+    	if (canMoveTo(newX, y)) x = newX;
+    	if (canMoveTo(x, newY)) y = newY;
+
+    	playerLoc.setLocal(x, y);
 
         if (worldMap != null) {
             MapCoord current = worldMap.coordAt(x, y);
@@ -72,6 +86,7 @@ public class Player extends Entity {
         if (debug && Input.isKeyReleased(KeyEvent.VK_L))
             System.out.println("World pos: " + x + ", " + y);
     }
+
 
     private boolean canMoveTo(double x, double y) {
         if (worldMap == null) return true;
