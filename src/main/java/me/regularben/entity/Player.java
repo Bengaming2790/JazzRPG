@@ -3,14 +3,14 @@ package me.regularben.entity;
 import me.regularben.map.MapCoord;
 import me.regularben.map.TileMapLoader;
 import me.regularben.map.WorldMap;
+import me.regularben.map.util.Tile;
+import me.regularben.map.util.behaviors.DamageBehavior;
 import me.regularben.util.Input;
 import me.regularben.util.Location;
 
 import javax.imageio.ImageIO;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.util.Arrays;
 
 public class Player extends Entity {
 
@@ -18,7 +18,7 @@ public class Player extends Entity {
     public boolean debug;
     private final double moveSpeed = 4.0;
     private WorldMap worldMap;
-
+    private double tileDamageSpeed = 1.0;
     public Player() {
         playerLoc    = new Location(TileMapLoader.COLS / 2.0, TileMapLoader.ROWS / 2.0);
         spriteWidth  = 16;
@@ -29,7 +29,6 @@ public class Player extends Entity {
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
     }
-
     private void loadSprite(String path) {
         try (InputStream is = Player.class.getClassLoader()
                 .getResourceAsStream("assets/textures/" + path)) {
@@ -47,7 +46,7 @@ public class Player extends Entity {
     public double getX() { return playerLoc.getX(); }
     public double getY() { return playerLoc.getY(); }
 
- public void update() {
+    public void update() {
     	double x = playerLoc.getX();
     	double y = playerLoc.getY();
     	double newX = x, newY = y;
@@ -82,12 +81,26 @@ public class Player extends Entity {
                 worldMap.updateLoadedMaps(current);
             }
         }
+        
+        if (shouldDamagePlayer(getStandingTile())) {
+        	System.out.println("[Debug] damageing player by " + tileDamageSpeed);
+        	this.damage(tileDamageSpeed);
+        }
 
         if (debug && Input.isKeyReleased(KeyEvent.VK_L))
             System.out.println("World pos: " + x + ", " + y);
     }
 
+    public Tile getStandingTile() {
+    	return worldMap.getTileAt(playerLoc.getX(), playerLoc.getY());
+    }
+    
+    public boolean shouldDamagePlayer(Tile tile) {
+        return tile.getType().getBehaviors().stream()
+                   .anyMatch(behavior -> behavior instanceof DamageBehavior);
+    }
 
+    
     private boolean canMoveTo(double x, double y) {
         if (worldMap == null) return true;
 
